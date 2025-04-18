@@ -1,24 +1,19 @@
 import sqlite3
 
-conn = sqlite3.connect("database.db")
-c = conn.cursor()
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
 
-# Create the users table
-c.execute('''
-    CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL
-    )
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+)
 ''')
 
-# Insert a test user
-c.execute('''
-    INSERT INTO users (username, password)
-    VALUES (?, ?)
-''', ("admin", "admin"))
+# Add a test user (optional)
+cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", ("admin", "admin123"))
 
 conn.commit()
 conn.close()
-
-print("Database created with test user.")
+print("Database initialized successfully.")
