@@ -1,16 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, '../database.db')
+
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.route('/')
-def home():
+@app.route('/', methods=['GET'])
+def index():
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -18,7 +22,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', 
                             (username, password)).fetchone()
@@ -28,7 +32,7 @@ def login():
             session['user_id'] = user['id']
             return redirect(url_for('dashboard'))
         else:
-            return "Invalid credentials"
+            return "Invalid username or password"
     return render_template('login.html')
 
 @app.route('/dashboard')
@@ -37,5 +41,5 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+def handler(environ, start_response):
+    return app(environ, start_response)
