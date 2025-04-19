@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, '../database.db')
+DB_PATH = os.path.join(BASE_DIR, './database.db')
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
