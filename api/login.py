@@ -1,7 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 import sqlite3
 import os
-
+if not os.path.exists('database.db'):
+    import init_db
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
